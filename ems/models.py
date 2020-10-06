@@ -16,7 +16,7 @@ class Employee(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    department = models.ManyToManyField(Department)
     designation = models.CharField(choices=DESIGNATIONS, max_length=2)
 
     def __str__(self):
