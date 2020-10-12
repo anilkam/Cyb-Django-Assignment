@@ -18,6 +18,7 @@ class DepartmentSerializer(serializers.HyperlinkedModelSerializer):
 class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
     emp_first_name = serializers.ReadOnlyField(source='user.first_name')
     emp_last_name = serializers.ReadOnlyField(source='user.last_name')
+    # dept_name = serializers.ReadOnlyField(source='department.name',many=True)
     # department = DepartmentSerializer(many=True)
 
     class Meta:
