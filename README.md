@@ -1,6 +1,6 @@
 # Cyb-Django-Assignment
 
-Django Rest + SQLite3
+An employee management system application built with Django Rest and SQLite3. 
 
 ## Prerequisites
 
@@ -37,7 +37,7 @@ Run server:
 | anil | strong123 | No |
 | tathya | strong123 | No |
 
-## Run Test
+## Run Tests
 
 ```bash
 (env) $ pytest
