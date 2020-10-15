@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ems.models import Employee, Department
+from ems.models import Employee, Department, Company
 from django.contrib.auth.models import User
 
 
@@ -9,10 +9,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'url', 'username', 'first_name', 'last_name']
 
 
+class CompanySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Company
+        fields = ['id', 'url', 'name']        
+
+
 class DepartmentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Department
-        fields = ['id', 'url', 'name']
+        fields = ['id', 'url', 'name', 'company']
 
 
 class EmployeeSerializer(serializers.HyperlinkedModelSerializer):

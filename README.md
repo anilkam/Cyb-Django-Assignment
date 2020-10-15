@@ -13,7 +13,7 @@ pip
 Create & activate a virtual environment:
 ```bash
 $ python3 -m venv env
-$ source "/env/bin/activate"
+$ source env/bin/activate
 ```
 
 Install packages from [requirements.txt](requirements.txt)
