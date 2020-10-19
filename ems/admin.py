@@ -3,6 +3,7 @@ from .models import Employee, Department, Company
 from django_reverse_admin import ReverseModelAdmin
 from nested_admin import NestedStackedInline, NestedModelAdmin
 
+admin.site.site_header = "Employee management Admin"
 
 @admin.register(Employee)
 class EmployeeAdmin(ReverseModelAdmin):
