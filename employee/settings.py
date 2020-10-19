@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ems',
-    'rest_framework'
+    'rest_framework',
+    'nested_admin',
 ]
 
 MIDDLEWARE = [
