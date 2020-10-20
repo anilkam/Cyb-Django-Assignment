@@ -1,7 +1,10 @@
 asgiref==3.2.10
 astroid==2.4.2
 attrs==20.2.0
+coverage==5.3
 Django==3.1.2
+django-nested-admin==3.3.2
+django-reverse-admin==2.9.0
 djangorestframework==3.12.1
 importlib-metadata==2.0.0
 iniconfig==1.0.1
@@ -15,7 +18,9 @@ py==1.9.0
 pylint==2.6.0
 pyparsing==2.4.7
 pytest==6.1.1
+pytest-cov==2.10.1
 pytest-django==3.10.0
+python-monkey-business==1.0.0
 pytz==2020.1
 six==1.15.0
 sqlparse==0.3.1

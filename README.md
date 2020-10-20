@@ -42,3 +42,5 @@ Run server:
 ```bash
 (env) $ pytest
 ```
+
+To check code coverage, open `index.html` inside `htmlcov` after running above command

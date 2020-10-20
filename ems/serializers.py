@@ -3,25 +3,25 @@ from ems.models import Employee, Department, Company
 from django.contrib.auth.models import User
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'url', 'username', 'first_name', 'last_name']
+        fields = ['id', 'username', 'first_name', 'last_name']
 
 
-class CompanySerializer(serializers.HyperlinkedModelSerializer):
+class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ['id', 'url', 'name']        
+        fields = ['id', 'name']        
 
 
-class DepartmentSerializer(serializers.HyperlinkedModelSerializer):
+class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields = ['id', 'url', 'name', 'company']
+        fields = ['id', 'name', 'company']
 
 
-class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
+class EmployeeSerializer(serializers.ModelSerializer):
     emp_first_name = serializers.ReadOnlyField(source='user.first_name')
     emp_last_name = serializers.ReadOnlyField(source='user.last_name')
     # dept_name = serializers.ReadOnlyField(source='department.name',many=True)
@@ -29,4 +29,4 @@ class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Employee
-        fields = ['id', 'url', 'user', 'emp_first_name', 'emp_last_name', 'department','designation']
+        fields = ['id', 'user', 'emp_first_name', 'emp_last_name', 'department','designation']
