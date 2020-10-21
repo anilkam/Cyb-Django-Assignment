@@ -126,6 +126,9 @@ class DeleteSingleCompanyTest(APITestCase):
             reverse('company-detail', kwargs={'pk': self.c1.pk}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
+        deleted = Company.objects.filter(pk=self.c1.pk).first()
+        self.assertEqual(deleted, None)
+
     def test_invalid_delete_company(self):
         response = self.client.delete(
             reverse('company-detail', kwargs={'pk': 30}))

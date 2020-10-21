@@ -138,6 +138,9 @@ class DeleteSingleDepartmentTest(APITestCase):
             reverse('department-detail', kwargs={'pk': self.test_dept.pk}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
+        deleted = Department.objects.filter(pk=self.test_dept.pk).first()
+        self.assertEqual(deleted, None)
+
     def test_invalid_delete_department(self):
         response = self.client.delete(
             reverse('department-detail', kwargs={'pk': 30}))

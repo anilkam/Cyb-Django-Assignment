@@ -108,14 +108,35 @@ class GetSingleEmployeeTest(APITestCase):
         response = self.client.get(reverse('employee-detail', kwargs={'pk': 10}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-'''
 class CreateNewEmployeeTest(APITestCase):
-    """ Test module for inserting a new company """
+    """ Test module for inserting a new employee """
 
     def setUp(self):
-        self.valid_payload = {"name":"Tester Inc"}
+        c1 = Company.objects.create(name='Test Company 1')
 
-        self.invalid_payload = {"name":""}
+        dept1 = Department.objects.create(name='Engineering', company=c1)
+        dept2 = Department.objects.create(name='Quality Assurance', company=c1)
+        
+        self.user1 = User.objects.create_user(
+            username='testuser',
+            email='test@email.com',
+            password='secret',
+            first_name='Test',
+            last_name='User'
+        )
+
+        self.valid_payload = {
+            "user": self.user1.pk,
+            "department": [
+                dept1.pk, dept2.pk
+            ],
+            "designation": "Mg"
+        }
+
+        self.invalid_payload = {
+            "department": [dept2.pk],
+            "designation": "As"
+        }
 
     def test_create_valid_employee(self):
         response = self.client.post(
@@ -124,7 +145,7 @@ class CreateNewEmployeeTest(APITestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data, {'id': 1, **self.valid_payload})
+        self.assertEqual(response.data, {'id': 1, 'emp_first_name': self.user1.first_name,'emp_last_name': self.user1.last_name, **self.valid_payload})
 
     def test_create_invalid_employee(self):
         response = self.client.post(
@@ -134,30 +155,67 @@ class CreateNewEmployeeTest(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # Assert error message on name field
-        self.assertEqual(response.data, {"name": ["This field may not be blank."]})
+        self.assertEqual(response.data, {"user": ["This field is required."]})
 
 class UpdateSingleEmployeeTest(APITestCase):
     """ Test module for updating an existing employee record """
 
     def setUp(self):
-        self.c1 = Company.objects.create(name='Test Company 1')
-        Company.objects.create(name='Test Company 2')
+        c1 = Company.objects.create(name='Test Company 1')
+
+        dept1 = Department.objects.create(name='Engineering', company=c1)
+        dept2 = Department.objects.create(name='Quality Assurance', company=c1)
+        dept3 = Department.objects.create(name='Human Resources', company=c1)
+        
+        user1 = User.objects.create_user(
+            username='testuser',
+            email='test@email.com',
+            password='secret',
+            first_name='Test',
+            last_name='User'
+        )
+
+        self.emp1 = Employee.objects.create(
+            designation='Jr',
+            user=user1,
+        )
+
+        self.emp1.department.add(dept1, dept2)
+
+        user2 = User.objects.create_user(
+            username='user2',
+            email='test2@email.com',
+            password='secret'
+        )
+
+        emp2 = Employee.objects.create(
+            designation='Sr',
+            user=user2,
+        )
+
+        emp2.department.add(dept3)
+
         self.valid_payload = {
-            'name': 'Test Tech'
+            "user": user1.pk,
+            "department": [
+                dept1.pk, dept2.pk
+            ],
+            "designation": "Mg"
         }
 
         self.invalid_payload = {
-            'name': ''
+            "department": [dept2.pk],
+            "designation": "As"
         }
 
     def test_valid_update_employee(self):
         response = self.client.put(
-            reverse('employee-detail', kwargs={'pk': self.c1.pk}),
+            reverse('employee-detail', kwargs={'pk': self.emp1.pk}),
             data=JSONRenderer().render(self.valid_payload),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'id': self.c1.pk, **self.valid_payload})
+        self.assertEqual(response.data, {'id': self.emp1.pk, 'emp_first_name':self.emp1.user.first_name, 'emp_last_name':self.emp1.user.last_name, **self.valid_payload})
 
     def test_invalid_update_employee(self):
         response = self.client.put(
@@ -166,22 +224,56 @@ class UpdateSingleEmployeeTest(APITestCase):
             content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # Assert error message on name field
-        self.assertEqual(response.data, {"name": ["This field may not be blank."]})
+        self.assertEqual(response.data, {"user": ["This field is required."]})
+
 
 class DeleteSingleEmployeeTest(APITestCase):
     """ Test module for deleting an existing employee record """
 
     def setUp(self):
-        self.c1 = Company.objects.create(name='Test Company 1')
-        Company.objects.create(name='Test Company 2')
+        c1 = Company.objects.create(name='Test Company 1')
+
+        dept1 = Department.objects.create(name='Engineering', company=c1)
+        dept2 = Department.objects.create(name='Quality Assurance', company=c1)
+        dept3 = Department.objects.create(name='Human Resources', company=c1)
+        
+        user1 = User.objects.create_user(
+            username='testuser',
+            email='test@email.com',
+            password='secret',
+            first_name='Test',
+            last_name='User'
+        )
+
+        self.emp1 = Employee.objects.create(
+            designation='Jr',
+            user=user1,
+        )
+
+        self.emp1.department.add(dept1, dept2)
+
+        user2 = User.objects.create_user(
+            username='user2',
+            email='test2@email.com',
+            password='secret'
+        )
+
+        emp2 = Employee.objects.create(
+            designation='Sr',
+            user=user2,
+        )
+
+        emp2.department.add(dept3)
         
     def test_valid_delete_employee(self):
         response = self.client.delete(
-            reverse('employee-detail', kwargs={'pk': self.c1.pk}))
+            reverse('employee-detail', kwargs={'pk': self.emp1.pk}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        deleted = Employee.objects.filter(pk=self.emp1.pk).first()
+        self.assertEqual(deleted, None)
 
     def test_invalid_delete_employee(self):
         response = self.client.delete(
             reverse('employee-detail', kwargs={'pk': 30}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-'''
